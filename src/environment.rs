@@ -1,7 +1,7 @@
 use crate::*;
 
 #[derive(Debug)]
-struct Environment {
+pub struct Environment {
     pub grid_width: u32,
     pub grid_height: u32,
     pub current_state: (u32, u32),
@@ -9,13 +9,14 @@ struct Environment {
 }
 
 #[derive(Debug)]
-struct SpecialState {
+pub struct SpecialState {
     pub coordinate: (u32, u32),
     pub transitions_to: (u32, u32),
     pub reward: f32,
 }
 
-enum Action { North, South, East, West }
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Action { North, South, East, West }
 
 impl Environment {
     pub fn new(grid_width: u32, grid_height: u32, start_state: (u32, u32), special_states: Vec<SpecialState>) -> Self {
