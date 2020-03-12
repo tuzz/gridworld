@@ -20,7 +20,7 @@ fn main() {
       SpecialState { coordinate: (3, 0), transitions_to: (3, 2), reward: 5. },
     ]);
 
-    let game = Game(environment, Agent::new(), Trajectory::new());
+    let game = Game(environment, Agent::new(0.9), Trajectory::new());
     render(&game);
 
     game_loop(game, 1, 1., |g| {

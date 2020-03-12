@@ -4,7 +4,9 @@ pub fn render(Game(environment, agent, trajectory): &Game) {
     print!("\x1B[2J"); // Clear the terminal
 
     let jumps = environment.special_states.len();
-    println!("State-Value function for the random policy on a grid with {} jumps:", jumps);
+    let lambda = agent.discount_factor;
+
+    println!("State-Value function for the random policy on a grid with {} jumps and λ={}", jumps, lambda);
     println!();
 
     for y in 0..environment.grid_height {
@@ -23,7 +25,7 @@ pub fn render(Game(environment, agent, trajectory): &Game) {
     print_divider(999, environment);
 
     println!();
-    println!("Trajectory at time={} (state, value, reward):", trajectory.states.len());
+    println!("Trajectory at time={} (state, value, reward)", trajectory.states.len());
     println!();
 
     let zipped = izip!(&trajectory.states, &trajectory.actions, &trajectory.rewards)

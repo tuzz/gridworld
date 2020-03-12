@@ -3,6 +3,7 @@ use crate::*;
 #[derive(Default)]
 pub struct Agent {
     pub state_value_function: HashMap<(u32, u32), f32>,
+    pub discount_factor: f32,
 
     pub last_state: Option<(u32, u32)>,
     pub last_action: Option<Action>,
@@ -11,8 +12,8 @@ pub struct Agent {
 }
 
 impl Agent {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(discount_factor: f32) -> Self {
+        Self { discount_factor, ..Self::default() }
     }
 
     pub fn select_action(&mut self, state: (u32, u32), actions: &[Action]) -> Action {
@@ -35,7 +36,7 @@ mod test {
 
     #[test]
     fn it_selects_a_random_action_from_those_available() {
-        let mut agent = Agent::new();
+        let mut agent = Agent::new(1.);
 
         for _ in 0..100 {
             let action = agent.select_action((0, 0), &[Action::North]);
@@ -51,7 +52,7 @@ mod test {
 
     #[test]
     fn it_sets_last_state_and_action_after_selecting_one() {
-        let mut agent = Agent::new();
+        let mut agent = Agent::new(1.);
 
         agent.select_action((1, 2), &[Action::North]);
 
