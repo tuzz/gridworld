@@ -1,22 +1,30 @@
 mod agent;
 mod environment;
+mod render;
+mod trajectory;
 
 use game_loop::game_loop;
+use itertools::izip;
 use rand::{rngs::ThreadRng, seq::SliceRandom};
-use std::{cmp::min, collections::HashMap};
+use std::{cmp::min, collections::HashMap, thread::sleep, time::Duration};
 use environment::{Environment, Action, SpecialState};
 use agent::Agent;
+use render::render;
+use trajectory::Trajectory;
+
+pub struct Game(Environment, Agent, Trajectory);
 
 fn main() {
-    let environment = Environment::new(5, 5, (1, 0), vec![
+    let environment = Environment::new(5, 5, (2, 2), vec![
       SpecialState { coordinate: (1, 0), transitions_to: (1, 4), reward: 10. },
       SpecialState { coordinate: (3, 0), transitions_to: (3, 2), reward: 5. },
     ]);
 
-    let agent = Agent::new();
+    let game = Game(environment, Agent::new(), Trajectory::new());
+    render(&game);
 
-    game_loop((environment, agent), 5, 1., |g| {
-        let (environment, agent) = &mut g.game;
+    game_loop(game, 1, 1., |g| {
+        let Game(environment, agent, trajectory) = &mut g.game;
 
         let state = environment.current_state;
         let actions = environment.available_actions(state);
@@ -25,9 +33,9 @@ fn main() {
         let reward = environment.take_action(selected);
 
         agent.receive_reward(reward);
-    }, |_g| {
-
+        trajectory.add(state, selected, reward);
+    }, |g| {
+        render(&g.game);
+        sleep(Duration::from_millis(1000));
     });
-
-    println!("Hello, world!");
 }

@@ -2,12 +2,12 @@ use crate::*;
 
 #[derive(Default)]
 pub struct Agent {
-    state_value_function: HashMap<(u32, u32), f32>,
+    pub state_value_function: HashMap<(u32, u32), f32>,
 
-    last_state: Option<(u32, u32)>,
-    last_action: Option<Action>,
+    pub last_state: Option<(u32, u32)>,
+    pub last_action: Option<Action>,
 
-    random: ThreadRng,
+    pub random: ThreadRng,
 }
 
 impl Agent {
