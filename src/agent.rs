@@ -1,7 +1,7 @@
 use crate::*;
 
 #[derive(Default)]
-struct Agent {
+pub struct Agent {
     state_value_function: HashMap<(u32, u32), f32>,
 
     last_state: Option<(u32, u32)>,
