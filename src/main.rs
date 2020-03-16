@@ -23,7 +23,7 @@ fn main() {
     let game = Game(environment, Agent::new(0.9), Trajectory::new());
     render(&game);
 
-    game_loop(game, 1, 1., |g| {
+    game_loop(game, 1000, 1., |g| {
         let Game(environment, agent, trajectory) = &mut g.game;
 
         let state = environment.current_state;
@@ -32,10 +32,12 @@ fn main() {
         let selected = agent.select_action(state, &actions);
         let reward = environment.take_action(selected);
 
-        agent.receive_reward(reward);
+        let new_state = environment.current_state;
+        agent.receive_reward(reward, new_state);
+
         trajectory.add(state, selected, reward);
     }, |g| {
         render(&g.game);
-        sleep(Duration::from_millis(1000));
+        sleep(Duration::from_millis(250));
     });
 }

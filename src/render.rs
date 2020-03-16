@@ -17,7 +17,7 @@ pub fn render(Game(environment, agent, trajectory): &Game) {
             let state = (x, y);
             let value = agent.state_value_function.get(&state).unwrap_or(&0.);
 
-            print!("  {:.1}  |", value);
+            print!("  {:4.1}  |", value);
         }
         println!();
         print_spacer(y, environment);
@@ -46,13 +46,13 @@ pub fn render(Game(environment, agent, trajectory): &Game) {
 }
 
 fn print_divider(y: u32, environment: &Environment) {
-    let mut parts = vec!["--------".to_string(); environment.grid_width as usize];
+    let mut parts = vec!["---------".to_string(); environment.grid_width as usize];
 
     for (id, special_state) in environment.special_states.iter().enumerate() {
         if y == special_state.coordinate.1 {
             let x = special_state.coordinate.0;
 
-            parts[x as usize] = format!(" Jump {} ", id + 1);
+            parts[x as usize] = format!("  Jump {} ", id + 1);
         }
 
         if y == special_state.transitions_to.1 {
@@ -66,12 +66,12 @@ fn print_divider(y: u32, environment: &Environment) {
 }
 
 fn print_spacer(y: u32, environment: &Environment) {
-    let mut parts = vec!["|       "; environment.grid_width as usize];
+    let mut parts = vec!["|        "; environment.grid_width as usize];
 
     if y == environment.current_state.1 {
         let x = environment.current_state.0;
 
-        parts[x as usize] = "| xxxxx ";
+        parts[x as usize] = "| xxxxxx ";
     }
 
     println!("{}|", parts.join(""));

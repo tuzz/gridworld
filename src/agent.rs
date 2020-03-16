@@ -6,7 +6,6 @@ pub struct Agent {
     pub discount_factor: f32,
 
     pub last_state: Option<(u32, u32)>,
-    pub last_action: Option<Action>,
 
     pub random: ThreadRng,
 }
@@ -20,13 +19,21 @@ impl Agent {
         let action = *actions.choose(&mut self.random).unwrap();
 
         self.last_state = Some(state);
-        self.last_action = Some(action);
 
         action
     }
 
-    pub fn receive_reward(&mut self, _reward: f32) {
-        // TODO
+    pub fn receive_reward(&mut self, reward: f32, new_state: (u32, u32)) {
+        let prev_state = self.last_state.unwrap();
+
+        let prev_value = *self.state_value_function.entry(prev_state).or_insert(0.);
+        let this_value = *self.state_value_function.entry(new_state).or_insert(0.);
+
+        let new_value = reward + self.discount_factor * this_value;
+
+        if new_value > prev_value {
+            self.state_value_function.insert(prev_state, new_value);
+        }
     }
 }
 
@@ -51,12 +58,11 @@ mod test {
     }
 
     #[test]
-    fn it_sets_last_state_and_action_after_selecting_one() {
+    fn it_sets_last_state_after_selecting_one() {
         let mut agent = Agent::new(1.);
 
         agent.select_action((1, 2), &[Action::North]);
 
         assert_eq!(agent.last_state, Some((1, 2)));
-        assert_eq!(agent.last_action, Some(Action::North));
     }
 }
